@@ -16,7 +16,7 @@ Before attempting a port, understand what you are getting into:
 
 * We replace vendor firmware with custom *TF-A* and *U-Boot* to avoid dealing with crap vendor blobs. Shim bootloaders (uniLoader, U-Boot chainloaded as a kernel) won't be merged into the Linux tree without an exceptional hardware reason.
 
-* You can't debug TF-A or U-Boot with `pstore` or `simplefb`. Stop here and don't waste time if you fear opening the device.
+* You can't debug TF-A or U-Boot with `pstore` or `simplefb`. Sometimes you may need to forcefully reset the device, in such case, only battery flex disconnection works. Stop here and don't waste time if you fear opening the device.
 
 However, if you're lucky owner of few supported devices, you can skip most steps for porting. If your device matches the supported one, you don't need to make any modifications to the kernel or U-Boot. You simply can build existing configurations and flash them.
 
