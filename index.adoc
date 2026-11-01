@@ -1,0 +1,34 @@
+= Mainline on MediaTek MT6768 (powered by MediaTek MT6572 Mainline Inc.)
+:toc: left
+:docinfo: shared
+:stylesheet: style.css
+:linkcss:
+:nofooter:
+
+Mainline Linux, U-Boot, and TF-A support for MediaTek MT6768 platform.
+
+WARNING: *YOUR WARRANTY IS VOID.* You are solely responsible for any damage, data loss, or permanent bricks caused to your hardware.
+
+== Before we start
+Before attempting a port, understand what you are getting into:
+
+* Some I2C and SPI devices may be unsupported in the upstream. You will need to write drivers for them.
+
+* We replace vendor firmware with custom *TF-A* and *U-Boot* to avoid dealing with crap vendor blobs. Shim bootloaders (uniLoader, U-Boot chainloaded as a kernel) won't be merged into the Linux tree without an exceptional hardware reason.
+
+* You can't debug TF-A or U-Boot with `pstore` or `simplefb`. Stop here and don't waste time if you fear opening the device.
+
+== Prerequisites
+
+Do not start porting unless you have *all* of the following:
+
+1. A tested way to read/write partitions (`mtkclient`, `penumbra`, or others) even when TF-A, LK/U-Boot, and Linux are completely broken.
+2. An UART dongle with 1.8V logic level, such as FT2232H or FT232H.
+3. Host with Linux or WSL (untested) with basic knowledge of C, devicetrees, and compiling kernels.
+
+[CAUTION]
+====
+If BootROM or Preloader download mode is unavailable, or there's no signed DA, attempting mainline or even a shim bootloader is a *TERRIBLE* idea. If stock LK becomes unhappy with your DTB or boot image, it will bootloop with no way to interrupt it besides flashing a working image via download mode.
+
+*Do NOT use Android kernel LPE exploits to flash firmware or mainline images.* While LPE rooting is popular on locked devices, it relies on Android booting. dm-verity will still brick your device.
+====

@@ -1,0 +1,223 @@
+= Status
+:toc: left
+:docinfo: shared
+:stylesheet: style.css
+:linkcss:
+:nofooter:
+:ok: pass:q[[.ok]#OK#]
+:partial: pass:q[[.partial]#PARTIAL#]
+:dead: pass:q[[.dead]#DEAD#]
+
+== Linux
+=== Overview
+[cols="^1,^1,^3", options="header"]
+|===
+| Component | Status | Notes
+
+| CPU | {partial} |
+| clocks | {ok} | GCE driver needs modification to probe clock platform driver
+| pinctrl | {ok} | i guess?
+| power domain | {ok} |
+| bus | {ok} |
+| PMIC | {partial} |
+| storage | {ok} |
+| display | {ok} |
+| audio | {ok} |
+| MDP | {dead} |
+| camera | {dead} |
+| connectivity | {dead} |
+|===
+
+=== CPU
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| SMP | arm,psci-1.0 | {ok} |
+| cpufreq | drivers/cpufreq/mediatek-cpufreq.c | {ok} | supports all speedbins
+| hotplug | arm,psci-1.0 | {ok} | works only with custom TF-A
+| cpuidle | arm,idle-state | {dead} |
+| PMU | arm,dsu-pmu, arm,cortex-a55-pmu, arm,cortex-a75-pmu | {ok} |
+|===
+
+=== Clocks
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| mcucfg | mediatek,mt6768-mcucfg | {ok} |
+| topckgen | mediatek,mt6768-topckgen | {ok} |
+| infracfg ao | mediatek,mt6768-infracfg-ao | {ok} |
+| apmixedsys | mediatek,mt6768-apmixedsys | {ok} |
+| audio | mediatek,mt6768-audiosys | {ok} |
+| mipi | mediatek,mt6768-mipi[0-2]{a,b} | {ok} |
+| mfgcfg | mediatek,mt8183-mfgcfg | {ok} | shared with 8183
+| imgsys | mediatek,mt6768-imgsys | {ok} |
+| vdecsys | mediatek,mt6768-vdecsys | {ok} |
+| vencsys | mediatek,mt8183-vencsys | {ok} | shared with 8183
+| camsys | mediatek,mt6768-camsys | {ok} |
+| gce | drivers/clk/mediatek/clk-mt6768-gce.c | {ok} | needs wiring up
+|===
+
+=== Bus
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| pwrap | mediatek,mt6768-pwrap | {ok} |
+| i2c | mediatek,mt6768-i2c | {ok} |
+| spi | mediatek,mt6765-spi | {ok} |
+| usb | mediatek,mtk-musb | {ok} |
+| uart | mediatek,mt6577-uart | {ok} |
+|===
+
+=== PMIC
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| regulators | mediatek,mt6358-regulator | {ok} |
+| efuse | | {dead} |
+| thermal | | {dead} |
+| ADC | mediatek,mt6358-auxadc | {ok} | has some fixes missing in upstream
+| fuel gauge | mediatek,mt6358-gauge | {partial} | missing temperature sensing
+| codec | mediatek,mt6358-sound | {ok} | has some fixes missing in upstream
+| rtc | mediatek,mt6358-rtc | {ok} | spare cells are used for fg
+| keys | mediatek,mt6358-keys | {ok} |
+|===
+
+=== Storage
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| eMMC/microSD | mediatek,mt8183-mmc | {ok} |
+|===
+
+=== Display
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| mmsys | mediatek,mt6768-mmsys | {ok} |
+| drm | drivers/gpu/drm/mediatek/mtk_drm_drm.c | {ok} |
+| iommu | mediatek,mt6768-m4u | {ok} |
+| smi | mediatek,mt6768-smi-common | {ok} |
+| larb | mediatek,mt6768-smi-larb | {ok} |
+| ovl | mediatek,mt8192-disp-ovl, mediatek,mt8192-disp-ovl-2l | {ok} |
+| rdma | mediatek,mt6768-disp-rdma | {ok} |
+| wdma | mediatek,mt8173-disp-wdma | {ok} | driver exists on lkml
+| color | mediatek,mt8173-disp-color | {ok} |
+| ccorr | mediatek,mt8183-disp-ccorr | {ok} |
+| aal | mediatek,mt8183-disp-aal | {ok} |
+| gamma | mediatek,mt8183-disp-gamma | {ok} |
+| dither | mediatek,mt8183-disp-dither | {ok} |
+| dsi | mediatek,mt8183-dsi | {ok} |
+| dsi phy | mediatek,mt8183-mipi-tx | {ok} |
+| gce | mediatek,mt8173-gce | {ok} |
+| mutex | mediatek,mt6768-disp-mutex | {ok} |
+| gpu | mediatek,mt8186-mali | {ok} | supports all speedbins
+|===
+
+=== SoC
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| interrupt-controller | mediatek,mt6577-sysirq, arm,gic-v3 | {ok} |
+| watchdog | mediatek,mt6768-wdt | {ok} |
+| efuse | mediatek,mt8186-efuse | {partial} | needs socinfo patches
+| adc | mediatek,mt6765-auxadc | {ok} | has calibration
+| thermal | mediatek,mt6768-thermal | {ok} |
+| svs | mediatek,mt6768-svs | {ok} |
+| dvfsrc | mediatek,mt6768-dvfsrc, mediatek,mt6768-dvfsrc-regulator | {ok} | i guess?
+| emi interconnect | mediatek,mt6768-emi | {partial} | not wired up
+| pwm | mediatek,mt7622-pwm | {ok} |
+| disp pwm | mediatek,mt8183-disp-pwm | - | unknown
+| jpeg encoder | mediatek,mtk-jpgenc | {partial} | works but needs more patches for images dimension % 16 != 0
+|===
+
+== U-Boot
+[cols="^1,^1,^3", options="header"]
+|===
+| Component | Status | Notes
+
+| CPU | {ok} |
+| clocks | {ok} | topckgen, apmixedsys, infracfg, mmsys
+| pinctrl | {ok} | i guess?
+| power domain | {ok} |
+| UART | {ok} |
+| PMIC | {ok} | regulators, maybe fg later?
+| storage | {ok} |
+| display | {ok} |
+| charger | {dead} | maybe?
+|===
+
+== TF-A
+[cols="^1,^1,^3", options="header"]
+|===
+| Component | Status | Notes
+
+| sysirq | {ok} |
+| dvfsrc | {ok} | i guess?
+| SMP | {ok} |
+| hotplug | {ok} |
+| idle | {dead} | needs SPM firmware
+|===
+
+== Xiaomi Redmi Note 9
+=== Linux
+==== Power
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| battery | simple-battery, mediatek,mt6358-gauge | {partial} | no temperature reporting
+| charger | qcom,smb1351-charger | {ok} | QC untested
+|===
+
+==== I2C
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| backlight | kinetic,ktd3137 | {ok} |
+| magnetometer | asahi-kasei,ak09912 | {ok} |
+| alsps | sensortek,stk3310 | {ok} |
+| type-c controller | willsemi,wusb3801 | {ok} |
+| charger | qcom,smb1351-charger | {ok} | QC untested
+| SAR | semtech,sx9324 | {dead} | device disassembled, can't test
+|===
+
+==== SPI
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| touchscreen | novatek,nt36672a-ts | {partial} | sometimes can randomly refuse to probe
+| imu | bosch,bmi160 | {ok} |
+| speaker amplifier | cirrus,cs35l41 | {ok} |
+| nfc | nxp,pn553 | {dead} | untested
+|===
+
+==== Phone stuff
+[cols="^1,^2,^1,^2", options="header"]
+|===
+| Component | Driver | Status | Notes
+
+| audio | cirrus,cs35l41, mediatek,mt6358-sound | {ok} |
+| display | tianma,tl065fvxm03-01 | {ok} |
+| flashlight | gpio-leds | {ok} |
+| haptic | regulator-haptic | {ok} |
+| IR LED | pwm-ir-tx | {ok} |
+| USB | mediatek,mtk-musb | {ok} | both device and host mode are working
+|===
+
+=== U-Boot
+[cols="^1,^1,^3", options="header"]
+|===
+| Component | Status | Notes
+
+| backlight | {ok} |
+| display | {ok} |
+|===

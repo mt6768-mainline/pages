@@ -1,0 +1,47 @@
+<button id="toggle-mt6768" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 8px 14px;
+  background: #222;
+  color: #ff5555;
+  border: 1px solid #ff5555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: monospace;
+">Toggle mt6768 mode</button>
+
+<script>
+const btn = document.getElementById('toggle-mt6768');
+
+if (localStorage.getItem('mt6768-mode') === 'enabled') {
+  document.body.classList.add('mt6768');
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('mt6768');
+  });
+}
+
+btn.addEventListener('click', () => {
+  document.body.classList.toggle('mt6768');
+  const ismt6768 = document.body.classList.contains('mt6768');
+  localStorage.setItem('mt6768-mode', ismt6768 ? 'enabled' : 'disabled');
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  const toc = document.getElementById("toc");
+  if (!toc) return;
+  const nav = document.createElement("div");
+  nav.innerHTML = `
+    <div id="toctitle">Pages</div>
+    <ul class="sectlevel1" style="margin-bottom: 1.5em; border-bottom: 1px solid #dddddf; padding-bottom: 1em;">
+      <li><a href="index.html">Overview</a></li>
+      <li><a href="prepare.html">Prepare for porting</a></li>
+      <li><a href="bringup.html">Bringup</a></li>
+      <li><a href="install.html">Prepare and flash images</a></li>
+      <li><a href="status.html">Status</a></li>
+    </ul>
+  `;
+  toc.prepend(nav);
+});
+</script>

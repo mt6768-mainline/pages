@@ -1,0 +1,49 @@
+= Prepare for Porting
+:toc: left
+:docinfo: shared
+:stylesheet: style.css
+:linkcss:
+:nofooter:
+
+Before wiping Android, take a full partition backup and extract all hardware details from the stock. Reflashing stock Android later just to check I2C devices is painful.
+
+== UART
+I recommend using FT2232H (or FT232H) dongle. It works with every board, and can't be fried even if you accidentally connect it to VBUS or VBAT pads. Cheaper bridges like CH341 or CP2102 may produce garbage on certain boards, while work properly on others.
+
+On some boards, such as Xiaomi Redmi Note 9, pads are labeled and easy to solder. On others, you may need to find UART, remove metal shields or even solder SMD resistors to get the output.
+
+TIP: Once you have working UART, capture and save the boot log. It contains various details about the device.
+
+== Backup
+
+There have been cases where IMEI was lost while testing mainline kernel. Back up every partition (except `userdata` and `metadata`) *before* flashing anything.
+
+[,shell]
+----
+sudo -E ./mtk.py printgpt
+
+# dumps metadata and userdata too
+sudo -E ./mtk.py rl backup-dir/
+
+# or at least these
+sudo -E ./mtk.py r nvram backup-dir/nvram.img
+sudo -E ./mtk.py r nvdata backup-dir/nvdata.img
+sudo -E ./mtk.py r nvcfg backup-dir/nvcfg.img
+sudo -E ./mtk.py r boot backup-dir/boot.img
+sudo -E ./mtk.py r dtbo backup-dir/dtbo.img
+sudo -E ./mtk.py r lk backup-dir/lk.img
+sudo -E ./mtk.py r tee1 backup-dir/tee1.img
+----
+
+== Dump from stock
+* Dump `/sys/firmware/fdt`, pull to the host and decompile. It has all overlays and LK properties applied.
+
+* Save I2C and SPI device addresses
+
+[,shell]
+----
+adb shell "grep ^ /sys/bus/i2c/devices/*/name" > stock-i2c.txt
+adb shell "grep ^ /sys/bus/spi/devices/*/modalias" > stock-spi.txt
+----
+
+* Save `/proc/cmdline` for various details, such as panel driver in the downstream.
