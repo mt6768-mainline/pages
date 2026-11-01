@@ -18,6 +18,8 @@ Before attempting a port, understand what you are getting into:
 
 * You can't debug TF-A or U-Boot with `pstore` or `simplefb`. Stop here and don't waste time if you fear opening the device.
 
+However, if you're lucky owner of few supported devices, you can skip most steps for porting. If your device matches the supported one, you don't need to make any modifications to the kernel or U-Boot. You simply can build existing configurations and flash them.
+
 == Prerequisites
 
 Do not start porting unless you have *all* of the following:
@@ -32,3 +34,12 @@ If BootROM or Preloader download mode is unavailable, or there's no signed DA, a
 
 *Do NOT use Android kernel LPE exploits to flash firmware or mainline images.* While LPE rooting is popular on locked devices, it relies on Android booting. dm-verity will still brick your device.
 ====
+
+== Supported devices
+To identify your device you either need to take UART log dump or take a look at stock `/proc/cmdline` contents.
+
+=== Xiaomi Redmi Note 9:
+* Panel: `LCM_name=nt36672A_fhdp_dsi_vdo_tianma_lcm_drv` -> `tianma,tl065fvxm03-01`
+* Backlight: `:bklic=24` -> `kinetic,ktd3137`
+
+If the following configuration matches, the device is fully supported. Otherwise, you will need to create overlay for your panel and/or backlight.
