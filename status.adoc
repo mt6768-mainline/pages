@@ -106,7 +106,7 @@
 | larb | mediatek,mt6768-smi-larb | {ok} |
 | ovl | mediatek,mt8192-disp-ovl, mediatek,mt8192-disp-ovl-2l | {ok} |
 | rdma | mediatek,mt6768-disp-rdma | {ok} |
-| wdma | mediatek,mt8173-disp-wdma | {ok} | driver exists on lkml
+| wdma | mediatek,mt8173-disp-wdma | {dead} | driver exists on lkml
 | color | mediatek,mt8173-disp-color | {ok} |
 | ccorr | mediatek,mt8183-disp-ccorr | {ok} |
 | aal | mediatek,mt8183-disp-aal | {ok} |
