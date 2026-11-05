@@ -80,7 +80,7 @@
 | efuse | | {dead} |
 | thermal | | {dead} |
 | ADC | mediatek,mt6358-auxadc | {ok} | has some fixes missing in upstream
-| fuel gauge | mediatek,mt6358-gauge | {partial} | missing temperature sensing
+| fuel gauge | mediatek,mt6358-gauge | {ok} |
 | codec | mediatek,mt6358-sound | {ok} | has some fixes missing in upstream
 | rtc | mediatek,mt6358-rtc | {ok} | spare cells are used for fg
 | keys | mediatek,mt6358-keys | {ok} |
