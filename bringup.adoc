@@ -5,18 +5,71 @@
 :linkcss:
 :nofooter:
 
-== Kernel
-1. Copy merlin devicetree and rename to match `mt6768-vendor-codename.dts`.
-2. Add your new `.dtb` target to `arch/arm64/boot/dts/mediatek/Makefile`.
-3. Remove every i2c, spi, dsi, regulator and other nodes. Make sure to keep only uart, pio and usb.
-4. Once it boots, go port TF-A and U-Boot.
-5. Then start adding more nodes, until eventually the functionality is similar to merlin.
-6. Do *NOT* bring SCP stock firmware for sensors. Instead, merlin re-muxes i2c and spi to the AP, so you should do the same.
-7. Do *NOT* add panel-simple after bringup is done. Switch to proper panel driver.
+== U-Boot
+It's better to port U-Boot first, since it will speed up iterations with `fastboot boot`. Note that U-Boot *CANNOT* boot stock Android.
 
-== U-Boot & TF-A
-You have to replace both at the same time, because TF-A doesn't provide SiP calls for stock LK, and U-Boot is 64-bit, which doesn't work with stock blobs because they assume BL32 is 32-bit.
+* Clone https://github.com/mt6768-mainline/u-boot[U-Boot].
+* Make sure you have an AArch64 GCC cross-compiler installed, such as `aarch64-linux-gnu-gcc`.
+* Copy the `merlin` devicetree and adapt it for your device, stripping out everything except UART and USB.
+* Run `make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) merlin_defconfig` and replace the default DT name with your own.
+* Run `make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)` to build U-Boot.
 
-For TF-A, there's no porting in general at all. You just build it and flash. That's it.
+=== Running as kernel
+This is helpful because panel driver debugging might be tricky. Usually, Linux and U-Boot should work fine with and without stock LK bootloader.
 
-For U-Boot, it's usually similar to Linux. Take the Linux DT, adapt to U-Boot, following merlin as example. It's usually easier to port Linux display first, then U-Boot is simply adapting panel and backlight from Linux drivers.
+* Run `magiskboot unpack boot.img` on stock boot image.
+* Replace `kernel` file with `u-boot.bin`.
+* Run `magiskboot repack boot.img uboot.img`
+* Flash `uboot.img` to device `boot` partition.
+
+=== Running as bootloader
+This is preferred since U-Boot doesn't silently break your assumptions about enabled clocks and pinctrl. Generally, replacing LK with U-Boot is better after display bringup was done.
+
+* Because most retail devices are fused, we will need to use preloader exploit. Make sure your preloader is 2023 or older (`wrap` mode), 2025 or older (`override` mode) and install https://github.com/R0rt1z2/lkpatcher[lkpatcher].
+* Patch your stock `lk.img` backup to replace the `lk` payload with `u-boot.bin`:
++
+[,shell]
+----
+python -m lkpatcher lk.img --replace-partition lk u-boot.bin --cert-bypass wrap -o uboot.img
+----
+* Flash `uboot.img` to device `lk` partition.
+* Once it boots as LK, you can port display support.
+
+== Linux Kernel
+* Clone https://github.com/mt6768-mainline/linux[Linux].
+* Make sure you have LLVM or GCC cross-compiler for AArch64.
+* Make sure you've ported U-Boot first.
+* Copy `merlin` DT, remove *all* i2c, spi and display-related nodes. Keep only UART, USB and simple framebuffer.
+* Depending if LK or U-Boot framebuffer is used, address for simple framebuffer may differ. U-Boot framebuffer is usually displayed with `bdinfo` command. LK framebuffer is a reserved memory node.
+* Configure the kernel:
++
+[,shell]
+----
+make ARCH=arm64 LLVM=1 -j$(nproc) mt6768_defconfig
+----
+* Enable USB gadget and add `console=ttyGS0` to expose shell over USB if UART is not available.
+* Build using `make ARCH=arm64 LLVM=1 -j$(nproc)` (or GCC)
+* Once kernel is built, you will need initramfs. It can be busybox, buildroot or anything else.
+* Boot the kernel over fastboot (replace the `--dtb` path with your own devicetree blob):
++
+[,shell]
+----
+fastboot boot arch/arm64/boot/Image.gz rootfs.cpio.lz4 \
+    --dtb arch/arm64/boot/dts/mediatek/mt6768-xiaomi-merlin-nt36672a-ktd3137.dtb \
+    --header-version 2
+----
+* Once kernel boots, start adding supplies for CPU and CCI nodes (frequency scaling), GPU, display panel, i2c and spi devices, and so on. merlin DT should be a good reference for this.
+
+== TF-A
+There's no need to port it, since TF-A should be generic for all devices on the same platform. Note that you *CANNOT* boot stock LK with custom TF-A.
+
+* Clone https://github.com/mt6768-mainline/arm-trusted-firmware[it].
+* Build using `make PLAT=mt6768 DEBUG=1 bl31 -j$(nproc)`.
+* Clone https://github.com/mt6768-mainline/atftools[atftools] and install https://github.com/R0rt1z2/lkpatcher[lkpatcher].
+* Prepare an image:
++
+[,shell]
+----
+pack-atf tee.img ../arm-trusted-firmware/build/mt6768/debug/bl31.bin atfsign.img
+----
+* Flash `atfsign.img` to `tee1` partition.

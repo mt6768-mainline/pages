@@ -9,23 +9,20 @@ Mainline Linux, U-Boot, and TF-A support for MediaTek MT6768 platform.
 
 WARNING: *YOUR WARRANTY IS VOID.* You are solely responsible for any damage, data loss, or permanent bricks caused to your hardware.
 
-== Before we start
-Before attempting a port, understand what you are getting into:
+== Before We Start
+If you already own one of the <<_supported_devices,supported devices>> with matching configuration, you can skip porting process. You don't need to modify the kernel or U-Boot, and can simply build and flash the existing configurations. Yet making backups and collecting data from Android is still helpful if you want to contribute.
 
-* Some I2C and SPI devices may be unsupported in the upstream. You will need to write drivers for them.
+If you are *porting a new device* or *adding hardware support*, keep the following in mind:
 
-* We replace vendor firmware with custom *TF-A* and *U-Boot* to avoid dealing with crap vendor blobs. Shim bootloaders (uniLoader, U-Boot chainloaded as a kernel) won't be merged into the Linux tree without an exceptional hardware reason.
-
-* You can't debug TF-A or U-Boot with `pstore` or `simplefb`. Sometimes you may need to forcefully reset the device, in such case, only battery flex disconnection works. Stop here and don't waste time if you fear opening the device.
-
-However, if you're lucky owner of few supported devices, you can skip most steps for porting. If your device matches the supported one, you don't need to make any modifications to the kernel or U-Boot. You simply can build existing configurations and flash them.
+* Some I2C, SPI and DSI devices lack upstream support, so you may need to write drivers for them yourself.
+* We replace vendor firmware with custom *TF-A* and *U-Boot* to avoid broken vendor blobs and DTB pollution. Shim bootloaders (`uniLoader`, U-Boot chainloaded as a kernel) will not be merged into the Linux tree without good reason.
+* While you can debug many kernel issues over USB gadget serial or `simplefb`/`pstore` once U-Boot is running, those tools cannot help if TF-A or early U-Boot fails to initialize. Furthermore, if the board hangs hard during early bringup, the only way to forcefully reset is by disconnecting the battery flex cable. For initial device bringup, being comfortable opening the phone and wiring up UART is strongly recommended. Don't blame me for killing your device later.
 
 == Prerequisites
-
-Do not start porting unless you have *all* of the following:
+Before starting a new port, make sure you have:
 
 1. A tested way to read/write partitions (`mtkclient`, `penumbra`, or others) even when TF-A, LK/U-Boot, and Linux are completely broken.
-2. An UART dongle with 1.8V logic level, such as FT2232H or FT232H.
+2. (strongly recommended) An UART dongle with 1.8V logic level, such as FT2232H or FT232H. CP2102 or CH341 may work on certain boards.
 3. Host with Linux or WSL (untested) with basic knowledge of C, devicetrees, and compiling kernels.
 
 [CAUTION]
@@ -36,10 +33,10 @@ If BootROM or Preloader download mode is unavailable, or there's no signed DA, a
 ====
 
 == Supported devices
-To identify your device you either need to take UART log dump or take a look at stock `/proc/cmdline` contents.
+To identify your devixdice you either need to take UART log dump or take a look at stock `/proc/cmdline` contents.
 
-=== Xiaomi Redmi Note 9:
+=== Xiaomi Redmi Note 9
 * Panel: `LCM_name=nt36672A_fhdp_dsi_vdo_tianma_lcm_drv` -> `tianma,tl065fvxm03-01`
 * Backlight: `:bklic=24` -> `kinetic,ktd3137`
 
-If the following configuration matches, the device is fully supported. Otherwise, you will need to create overlay for your panel and/or backlight.
+If your hardware matches the above, the device is fully supported under `mt6768-xiaomi-merlin-nt36672a-ktd3137.dtb` configuration. If your unit shipped with a different panel or backlight revision, you will need to create overlay for your variant.

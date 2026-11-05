@@ -1,0 +1,59 @@
+= Contributing
+:toc: left
+:docinfo: shared
+:stylesheet: style.css
+:linkcss:
+:nofooter:
+
+== Pull requests and patches
+Fixes and new device ports are always welcome, but please go through this checklist before opening a pull request. These rules primarily target the Linux repository.  U-Boot and TF-A have slightly more relaxed requirements since they are not planned for upstream, though the general code quality expectations still apply.
+
+=== Firmware
+* [ ] I don't use any shim bootloaders (`uniLoader`, U-Boot chainloaded as a kernel, or any other)
+* [ ] *OR* I have a reason to not install custom U-Boot and TF-A (elaborate)
+
+We still provide the option to boot U-Boot as a kernel image, because it can be useful during early bringup and panel driver debugging. However, because power management on vendor firmware is broken, we only accept devices that run our TF-A and U-Boot forks, unless there is a genuine reason to not do it (note that some features may be broken in that case).
+
+=== Features
+* [ ] This change doesn't bring any major feature (new subsystem or big driver), or it was discussed with the maintainer beforehand
+
+Someone may already be working on the same feature or device port silently. Ask in the Matrix room before picking up major work so you don't duplicate effort.
+
+* [ ] This change doesn't import any downstream vendor modules
+* [ ] There are no references to the vendor kernel in the code (few references in the commit message is fine though)
+
+For obvious reasons, downstream vendor modules won't be accepted. Same applies to using downstream as reference in code comments. Erratum or hardware quirk in a commit message is fine, but comments like `/* downstream has i2c sensor at 0x36 */` are redundant and unhelpful.
+
+=== Code style
+* [ ] `scripts/checkpatch.pl --strict` passes without warnings/errors (missing MAINTAINERS for **existing** drivers or mt6768 platform are fine to ignore)
+* [ ] If devicetree files were modified, I have ensured that `CHECK_DTBS=y` returns zero warnings (example: `make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j16 CHECK_DTBS=y mediatek/mt6768-xiaomi-merlin-nt36672a-ktd3137.dtb`). I have also used devicetree overlay in parts which may differ between device variants according to bootloader or downstream kernel.
+* [ ] If dt-bindings were modified, I have ensured that `dt_binding_check` passes (example: `make ARCH=arm64 LLVM=1 -j16 dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/power/supply/qcom,smb1351.yaml`)
+* [ ] I have commented my code in hard to understand areas
+
+NOTE: Most `mt6768` devices are built by ODMs that ship multiple display panels, backlight ICs, or sensor variants under the same model name. If your downstream kernel or bootloader lists multiple hardware variants, split the specific nodes into `.dtso` overlays. You don't need to flash these to the `dtbo` partition, instead, check how `merlin` defines composite DTBs in `arch/arm64/boot/dts/mediatek/Makefile` so a single combined DTB can be used with fastboot.
+
+=== New drivers
+* [ ] I will send it to the LKML (and am only submitting it here to make rebasing easier)
+* [ ] *OR* I have confirmed that another developer owns the exact hardware and has agreed to take over authorship and upstream maintenance for LKM
+
+Peripheral drivers (such as I2C/SPI sensors or panels) and generic MediaTek driver fixes should be sent directly to LKML. However, please *DON'T* send any mt6768-specific platform patches upstream yet.
+
+=== Code quality
+* [ ] I have **reviewed** the code myself
+* [ ] I have written both commit message and PR summary (if any) myself
+
+While AI coding tools can be of considerable help when used correctly, please do not send unchecked drivers or DTs written by AI (so-called "vibecoding").
+
+You may want to look at other similar drivers to understand how it should look, document hard-to-understand code with comments and follow upstream practices. Do not pick old drivers if possible. There’s a bunch of outdated and poorly written drivers in the Linux.
+
+The same applies to commit messages, PR descriptions and communication in Matrix room. Using AI to understand a concept or check grammar is fine, but blind copy-pasting will be rejected.
+
+=== Verification
+* [ ] This change was verified on the real hardware across multiple cold reboots
+
+Please test your changes, ensure even after cold reboot everything is working.
+
+=== Upstreaming
+* [ ] I have used a known identity in `First Last <email>` format for both commit author and `Signed-off-by`
+
+mt6768 is not meant to remain a permanent downstream fork. Because acceptance of nicknames varies across upstream subsystem maintainers, all commits must use a standard known identity so patches can be sent to LKML later.

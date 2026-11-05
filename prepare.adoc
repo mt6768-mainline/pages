@@ -8,11 +8,9 @@
 Before wiping Android, take a full partition backup and extract all hardware details from the stock. Reflashing stock Android later just to check I2C devices is painful.
 
 == UART
-I recommend using FT2232H (or FT232H) dongle. It works with every board, and can't be fried even if you accidentally connect it to VBUS or VBAT pads. Cheaper bridges like CH341 or CP2102 may produce garbage on certain boards, while work properly on others.
-
 On some boards, such as Xiaomi Redmi Note 9, pads are labeled and easy to solder. On others, you may need to find UART, remove metal shields or even solder SMD resistors to get the output.
 
-TIP: Once you have working UART, capture and save the boot log. It contains various details about the device.
+TIP: Once you have working UART, capture and save the boot log. It can be helpful for stock bootloader reverse engineering.
 
 == Backup
 
@@ -33,6 +31,9 @@ sudo -E ./mtk.py r boot backup-dir/boot.img
 sudo -E ./mtk.py r dtbo backup-dir/dtbo.img
 sudo -E ./mtk.py r lk backup-dir/lk.img
 sudo -E ./mtk.py r tee1 backup-dir/tee1.img
+sudo -E ./mtk.py r persist backup-dir/presist.img
+sudo -E ./mtk.py r protect backup-dir/protect.img
+sudo -E ./mtk.py r proinfo backup-dir/proinfo.img
 ----
 
 == Dump from stock
