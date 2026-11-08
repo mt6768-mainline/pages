@@ -172,7 +172,7 @@
 |===
 | Component | Driver | Status | Notes
 
-| battery | simple-battery, mediatek,mt6358-gauge | {partial} | no temperature reporting
+| battery | simple-battery, mediatek,mt6358-gauge | {ok} |
 | charger | qcom,smb1351-charger | {ok} | QC untested
 |===
 
@@ -194,7 +194,7 @@
 |===
 | Component | Driver | Status | Notes
 
-| touchscreen | novatek,nt36672a-ts | {partial} | sometimes can randomly refuse to probe
+| touchscreen | novatek,nt36672a-ts | {ok} |
 | imu | bosch,bmi160 | {ok} |
 | speaker amplifier | cirrus,cs35l41 | {ok} |
 | nfc | nxp,pn553 | {dead} | untested
