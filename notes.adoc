@@ -16,7 +16,7 @@ Random notes without proper structuring (for now)
 mkbootimg --kernel arch/arm64/boot/Image.gz --ramdisk ~/Projects/mediatek/mt6768/buildroot/output/images/rootfs.cpio.lz4 --dtb arch/arm64/boot/dts/mediatek/mt6768-xiaomi-merlin-nt36672a-ktd3137.dtb --header_version 2
 ----
 * Environment is stored in the `dtbo` partition. Erase it when updating U-Boot or .env file.
-* For firmware you can use fastboot:
+* For firmware update you can use fastboot:
 +
 [,shell]
 ----
