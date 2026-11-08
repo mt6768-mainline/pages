@@ -1,0 +1,28 @@
+= Post-installation notes
+:toc: left
+:docinfo: shared
+:stylesheet: style.css
+:linkcss:
+:nofooter:
+
+Random notes without proper structuring (yet)
+
+== U-Boot
+* Hold Volume Up key during the boot to nconditionally enter boot menu.
+* Run mkbootimg and flash to `boot` partition to get Linux booting without PC:
++
+[,shell]
+----
+mkbootimg --kernel arch/arm64/boot/Image.gz --ramdisk ~/Projects/mediatek/mt6768/buildroot/output/images/rootfs.cpio.lz4 --dtb arch/arm64/boot/dts/mediatek/mt6768-xiaomi-merlin-nt36672a-ktd3137.dtb --header_version 2
+----
+* Environment is stored in the `dtbo` partition. Erase it when updating U-Boot or .env file.
+* For firmware you can use fastboot:
++
+[,shell]
+----
+# tf-a
+fastboot flash tee1 atfsign.img
+# u-boot
+fastboot flash lk uboot.img
+----
+* eMMC and microSD storage can be exposed to the PC using UMS mode in the boot menu.
