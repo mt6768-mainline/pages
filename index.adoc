@@ -33,7 +33,7 @@ If BootROM or Preloader download mode is unavailable, or there's no signed DA, a
 ====
 
 == Supported devices
-To identify your devixdice you either need to take UART log dump or take a look at stock `/proc/cmdline` contents.
+To identify your device you either need to take UART log dump or take a look at stock `/proc/cmdline` contents.
 
 === Xiaomi Redmi Note 9
 * Panel: `LCM_name=nt36672A_fhdp_dsi_vdo_tianma_lcm_drv` -> `tianma,tl065fvxm03-01`

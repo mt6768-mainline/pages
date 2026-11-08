@@ -5,7 +5,7 @@
 :linkcss:
 :nofooter:
 
-Random notes without proper structuring (yet)
+Random notes without proper structuring (for now)
 
 == U-Boot
 * Hold Volume Up key during the boot to nconditionally enter boot menu.

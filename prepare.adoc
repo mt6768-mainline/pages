@@ -31,7 +31,7 @@ sudo -E ./mtk.py r boot backup-dir/boot.img
 sudo -E ./mtk.py r dtbo backup-dir/dtbo.img
 sudo -E ./mtk.py r lk backup-dir/lk.img
 sudo -E ./mtk.py r tee1 backup-dir/tee1.img
-sudo -E ./mtk.py r persist backup-dir/presist.img
+sudo -E ./mtk.py r persist backup-dir/persist.img
 sudo -E ./mtk.py r protect backup-dir/protect.img
 sudo -E ./mtk.py r proinfo backup-dir/proinfo.img
 ----
