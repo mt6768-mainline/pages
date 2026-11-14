@@ -36,7 +36,7 @@
 | SMP | arm,psci-1.0 | {ok} |
 | cpufreq | drivers/cpufreq/mediatek-cpufreq.c | {ok} | supports all speedbins
 | hotplug | arm,psci-1.0 | {ok} | works only with custom TF-A
-| cpuidle | arm,idle-state | {dead} |
+| cpuidle | arm,idle-state | {partial} | idle works, deeper states TBD. depends on custom TF-A
 | PMU | arm,dsu-pmu, arm,cortex-a55-pmu, arm,cortex-a75-pmu | {ok} |
 |===
 
