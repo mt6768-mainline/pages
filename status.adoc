@@ -130,8 +130,8 @@
 | adc | mediatek,mt6765-auxadc | {ok} | has calibration
 | thermal | mediatek,mt6768-thermal | {ok} |
 | svs | mediatek,mt6768-svs | {ok} |
-| dvfsrc | mediatek,mt6768-dvfsrc, mediatek,mt6768-dvfsrc-regulator | {ok} |
-| emi interconnect | mediatek,mt6768-emi | {ok} |
+| dvfsrc | mediatek,mt6768-dvfsrc, mediatek,mt6768-dvfsrc-regulator | {ok} | depends on custom TF-A
+| emi interconnect | mediatek,mt6768-emi | {ok} | depends on custom TF-A
 | pwm | mediatek,mt7622-pwm | {ok} |
 | disp pwm | mediatek,mt8183-disp-pwm | - | unknown
 | jpeg encoder | mediatek,mtk-jpgenc | {partial} | works but needs more patches for images dimension % 16 != 0
