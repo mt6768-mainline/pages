@@ -15,7 +15,7 @@ It's better to port U-Boot first, since it will speed up iterations with `fastbo
 * Run `make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)` to build U-Boot.
 
 === Running as kernel
-This is helpful because panel driver debugging might be tricky. Usually, Linux and U-Boot should work fine with and without stock LK bootloader.
+This is helpful because panel driver debugging might be tricky.
 
 * Run `magiskboot unpack boot.img` on stock boot image.
 * Replace `kernel` file with `u-boot.bin`.
