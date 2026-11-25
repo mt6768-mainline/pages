@@ -5,6 +5,20 @@
 :linkcss:
 :nofooter:
 
+== TF-A
+There's no need to port it, since TF-A should be generic for all devices on the same platform. Note that you *CANNOT* boot stock LK with custom TF-A.
+
+* Clone https://github.com/mt6768-mainline/arm-trusted-firmware[it].
+* Build using `make PLAT=mt6768 DEBUG=1 bl31 -j$(nproc)`.
+* Clone https://github.com/mt6768-mainline/atftools[atftools] and install https://github.com/R0rt1z2/lkpatcher[lkpatcher].
+* Prepare an image:
++
+[,shell]
+----
+pack-atf tee.img ../arm-trusted-firmware/build/mt6768/debug/bl31.bin atfsign.img
+----
+* Flash `atfsign.img` to `tee1` partition.
+
 == U-Boot
 It's better to port U-Boot first, since it will speed up iterations with `fastboot boot`. Note that U-Boot *CANNOT* boot stock Android.
 
@@ -59,17 +73,3 @@ fastboot boot arch/arm64/boot/Image.gz rootfs.cpio.lz4 \
     --header-version 2
 ----
 * Once kernel boots, start adding supplies for CPU and CCI nodes (frequency scaling), GPU, display panel, i2c and spi devices, and so on. merlin DT should be a good reference for this.
-
-== TF-A
-There's no need to port it, since TF-A should be generic for all devices on the same platform. Note that you *CANNOT* boot stock LK with custom TF-A.
-
-* Clone https://github.com/mt6768-mainline/arm-trusted-firmware[it].
-* Build using `make PLAT=mt6768 DEBUG=1 bl31 -j$(nproc)`.
-* Clone https://github.com/mt6768-mainline/atftools[atftools] and install https://github.com/R0rt1z2/lkpatcher[lkpatcher].
-* Prepare an image:
-+
-[,shell]
-----
-pack-atf tee.img ../arm-trusted-firmware/build/mt6768/debug/bl31.bin atfsign.img
-----
-* Flash `atfsign.img` to `tee1` partition.
