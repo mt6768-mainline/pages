@@ -8,6 +8,8 @@
 == TF-A
 There's no need to port it, since TF-A should be generic for all devices on the same platform. Note that you *CANNOT* boot stock LK with custom TF-A.
 
+WARNING: dozens of features, including cpuidle, interconnects and hotplug, require a TF-A fork. Furthermore, cpufreq, ccifreq and the entire GPU and display will be *DEAD* if you skip this part *and don't remove interconnect support from Linux*.
+
 * Clone https://github.com/mt6768-mainline/arm-trusted-firmware[it].
 * Build using `make PLAT=mt6768 DEBUG=1 bl31 -j$(nproc)`.
 * Clone https://github.com/mt6768-mainline/atftools[atftools] and install https://github.com/R0rt1z2/lkpatcher[lkpatcher].
