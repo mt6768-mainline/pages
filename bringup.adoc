@@ -5,22 +5,6 @@
 :linkcss:
 :nofooter:
 
-== TF-A
-There's no need to port it, since TF-A should be generic for all devices on the same platform. Note that you *CANNOT* boot stock LK with custom TF-A.
-
-WARNING: dozens of features, including cpuidle, interconnects and hotplug, require a TF-A fork. Furthermore, cpufreq, ccifreq and the entire GPU and display will be *DEAD* if you skip this part *and don't remove interconnect support from Linux*.
-
-* Clone https://github.com/mt6768-mainline/arm-trusted-firmware[it].
-* Build using `make PLAT=mt6768 DEBUG=1 bl31 -j$(nproc)`.
-* Clone https://github.com/mt6768-mainline/atftools[atftools] and install https://github.com/R0rt1z2/lkpatcher[lkpatcher].
-* Prepare an image:
-+
-[,shell]
-----
-pack-atf tee.img ../arm-trusted-firmware/build/mt6768/debug/bl31.bin atfsign.img
-----
-* Flash `atfsign.img` to `tee1` partition.
-
 == U-Boot
 It's better to port U-Boot first, since it will speed up iterations with `fastboot boot`. Note that U-Boot *CANNOT* boot stock Android.
 
@@ -50,6 +34,22 @@ python -m lkpatcher lk.img --replace-partition lk u-boot.bin --cert-bypass wrap 
 ----
 * Flash `uboot.img` to device `lk` partition.
 * Once it boots as LK, you can port display support.
+
+== TF-A
+There's no need to port it, since TF-A should be generic for all devices on the same platform. Note that you *CANNOT* boot stock LK with custom TF-A.
+
+WARNING: Dozens of features, including cpuidle, interconnects and hotplug, require a TF-A fork. Furthermore, cpufreq, ccifreq and the entire GPU and display will be *DEAD* if you skip this part *and don't remove interconnect support from Linux*.
+
+* Clone https://github.com/mt6768-mainline/arm-trusted-firmware[it].
+* Build using `make PLAT=mt6768 DEBUG=1 bl31 -j$(nproc)`.
+* Clone https://github.com/mt6768-mainline/atftools[atftools] and install https://github.com/R0rt1z2/lkpatcher[lkpatcher].
+* Prepare an image:
++
+[,shell]
+----
+pack-atf tee.img ../arm-trusted-firmware/build/mt6768/debug/bl31.bin atfsign.img
+----
+* Flash `atfsign.img` to `tee1` partition.
 
 == Linux Kernel
 * Clone https://github.com/mt6768-mainline/linux[Linux].
