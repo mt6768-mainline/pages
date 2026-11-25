@@ -10,6 +10,11 @@ Mainline Linux, U-Boot, and TF-A support for MediaTek MT6768 platform.
 WARNING: *YOUR WARRANTY IS VOID.* You are solely responsible for any damage, data loss, or permanent bricks caused to your hardware.
 
 == Before We Start
+[WARNING]
+====
+Dual-booting with stock Android or any OS based on downstream kernel is not supported and not planned. To enjoy a full, flawless mainline experience, porting TF-A and U-Boot is *mandatory*.
+====
+
 If you already own one of the <<_supported_devices,supported devices>> with matching configuration, you can skip porting process. You don't need to modify the kernel or U-Boot, and can simply build and flash the existing configurations. Yet making backups and collecting data from Android is still helpful if you want to contribute.
 
 If you are *porting a new device* or *adding hardware support*, keep the following in mind:
